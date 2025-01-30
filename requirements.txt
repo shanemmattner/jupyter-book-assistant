@@ -6,3 +6,15 @@ sphinx-copybutton>=0.5.2
 sphinx-togglebutton>=0.3.2
 myst-nb>=0.17.2
 sphinx-design>=0.5.0
+ghp-import>=2.1.0
+matplotlib
+numpy
+pandas
+ipykernel
+jupyter-cache>=0.5
+sphinxcontrib-bibtex>=2.5.0
+sphinx-thebe>=0.3.1
+sphinx-comments>=0.0.3
+sphinx-external-toc>=1.0.1
+sphinx-jupyterbook-latex>=1.0.0
+sphinx-multitoc-numbering>=0.1.3

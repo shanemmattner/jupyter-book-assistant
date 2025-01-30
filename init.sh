@@ -14,6 +14,11 @@ command_exists() {
 # Error handling
 set -e
 
+# Get the absolute path to the script's directory
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+REPO_ROOT="$( cd "$SCRIPT_DIR/../.." && pwd )"
+BOOK_DIR="$REPO_ROOT/docs/book"
+
 echo -e "${GREEN}Initializing Jupyter Book Assistant...${NC}"
 
 # Check for python3
@@ -21,11 +26,6 @@ if ! command_exists python3; then
     echo -e "${RED}Error: python3 not found. Please install Python 3.${NC}"
     exit 1
 fi
-
-# Get the absolute path to the script's directory
-SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-REPO_ROOT="$( cd "$SCRIPT_DIR/../.." && pwd )"
-BOOK_DIR="$REPO_ROOT/docs/book"
 
 # Create necessary directories
 echo -e "${YELLOW}Creating necessary directories...${NC}"
@@ -52,13 +52,29 @@ else
     exit 1
 fi
 
-# Copy default configuration if it doesn't exist
-if [ -f "$SCRIPT_DIR/config/default_config.yaml" ]; then
-    echo -e "${YELLOW}Creating default configuration...${NC}"
-    cp "$SCRIPT_DIR/config/default_config.yaml" "$SCRIPT_DIR/config/config.yaml"
+# Create initial book structure
+echo -e "${YELLOW}Creating initial book structure...${NC}"
+if [ ! -d "$BOOK_DIR" ]; then
+    mkdir -p "$BOOK_DIR"
+    
+    # Copy template files
+    cp "$SCRIPT_DIR/config/default_config.yaml" "$BOOK_DIR/_config.yml"
+    cp "$SCRIPT_DIR/config/default_toc.yaml" "$BOOK_DIR/_toc.yml"
+    
+    # Create examples directory
+    mkdir -p "$BOOK_DIR/examples"
+    
+    # Copy template content
+    cp "$SCRIPT_DIR/config/templates/intro.md" "$BOOK_DIR/intro.md"
+    cp "$SCRIPT_DIR/config/templates/markdown-examples.md" "$BOOK_DIR/examples/markdown-examples.md"
+    cp "$SCRIPT_DIR/config/templates/notebook-examples.ipynb" "$BOOK_DIR/examples/notebook-examples.ipynb"
+    
+    # Create empty references.bib
+    touch "$BOOK_DIR/references.bib"
+    
+    echo -e "${GREEN}Created initial book structure in $BOOK_DIR${NC}"
 else
-    echo -e "${RED}Error: default_config.yaml not found${NC}"
-    exit 1
+    echo -e "${YELLOW}Book directory already exists. Skipping initial book creation.${NC}"
 fi
 
 # Set up git hooks
@@ -78,31 +94,19 @@ else
     echo -e "${YELLOW}Warning: .git directory not found. Skipping git hooks setup.${NC}"
 fi
 
-# Create initial book structure
-echo -e "${YELLOW}Creating initial book structure...${NC}"
-if [ -d "$BOOK_DIR" ]; then
-    echo -e "${YELLOW}Book directory already exists. Skipping initial book creation.${NC}"
-else
-    if command_exists jupyter-book; then
-        jupyter-book create "$BOOK_DIR"
-    else
-        echo -e "${YELLOW}Warning: jupyter-book command not found. Will be installed via requirements.${NC}"
-    fi
-fi
-
-# Update configuration with repository information
-if [ -f "$SCRIPT_DIR/config/config.yaml" ]; then
+# Update repository information in config
+if [ -f "$BOOK_DIR/_config.yml" ]; then
     REPO_URL=$(git -C "$REPO_ROOT" config --get remote.origin.url || echo "")
     REPO_BRANCH=$(git -C "$REPO_ROOT" rev-parse --abbrev-ref HEAD || echo "main")
     
     if [[ "$OSTYPE" == "darwin"* ]]; then
         # macOS
-        sed -i '' "s|repository:\n    url: \"\"|repository:\n    url: \"$REPO_URL\"|" "$SCRIPT_DIR/config/config.yaml"
-        sed -i '' "s|branch: \"main\"|branch: \"$REPO_BRANCH\"|" "$SCRIPT_DIR/config/config.yaml"
+        sed -i '' "s|repository:\n    url: \"\"|repository:\n    url: \"$REPO_URL\"|" "$BOOK_DIR/_config.yml"
+        sed -i '' "s|branch: \"main\"|branch: \"$REPO_BRANCH\"|" "$BOOK_DIR/_config.yml"
     else
         # Linux
-        sed -i "s|repository:\n    url: \"\"|repository:\n    url: \"$REPO_URL\"|" "$SCRIPT_DIR/config/config.yaml"
-        sed -i "s|branch: \"main\"|branch: \"$REPO_BRANCH\"|" "$SCRIPT_DIR/config/config.yaml"
+        sed -i "s|repository:\n    url: \"\"|repository:\n    url: \"$REPO_URL\"|" "$BOOK_DIR/_config.yml"
+        sed -i "s|branch: \"main\"|branch: \"$REPO_BRANCH\"|" "$BOOK_DIR/_config.yml"
     fi
 fi
 

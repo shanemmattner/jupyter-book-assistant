@@ -1,46 +1,49 @@
-book:
-  title: "Auto-Generated Documentation"
-  author: "Jupyter Book Assistant"
-  logo: ""
-  repository:
-    url: ""
-    path: ""
-    branch: "main"
-  
-structure:
-  chapters:
-    - file: index
-      title: Welcome
-    - file: api
-      title: API Documentation
-    - file: tutorials
-      title: Tutorials
-    - file: examples
-      title: Examples
+# Book settings
+# Learn more at https://jupyterbook.org/customize/config.html
 
-templates:
-  page_types:
-    concept: "templates/concept.md"
-    api: "templates/api.md"
-    tutorial: "templates/tutorial.md"
-    example: "templates/example.md"
+title: My Jupyter Book
+author: Your Name
+copyright: "2024"
+logo: logo.png
 
-generation:
-  auto_generate_on_release: true
-  min_release_version: "patch"
-  excluded_paths:
-    - "tests/"
-    - "docs/"
-    - ".git/"
+# Force re-execution of notebooks on each build.
+# See https://jupyterbook.org/content/execute.html
+execute:
+  execute_notebooks: force
+  timeout: 30
 
-review:
-  enabled: true
-  min_approvals: 1
-  auto_assign: true
-  reviewers: []
+# Define the name of the latex output file for PDF builds
+latex:
+  latex_documents:
+    targetname: book.tex
+
+# Add a bibtex file so that we can create citations
+bibtex_bibfiles:
+  - references.bib
+
+# Information about where the book exists on the web
+repository:
+  url: ""  # Online location of your book
+  path_to_book: docs/book  # Optional path to your book, relative to the repository root
+  branch: main  # Which branch of the repository should be used when creating links
+
+# Add GitHub buttons to your book
+# See https://jupyterbook.org/customize/config.html#add-a-link-to-your-repository
+html:
+  use_issues_button: true
+  use_repository_button: true
+  use_edit_page_button: true
+  comments:
+    hypothesis: true
 
 sphinx:
   config:
-    html_theme: "sphinx_book_theme"
-    html_title: "Documentation"
-    language: "en"
+    html_theme_options:
+      search_bar_text: Search this book...
+      use_download_button: true
+      repository_url: ""
+      use_repository_button: true
+      use_issues_button: true
+      home_page_in_navbar: true
+      path_to_docs: docs/book
+      extra_navbar: ""
