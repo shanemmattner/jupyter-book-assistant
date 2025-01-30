@@ -1,0 +1,3 @@
+[submodule "submodules/dash_curriculum"]
+	path = submodules/dash_curriculum
+	url = git@github.com:open-resources/dash_curriculum.git

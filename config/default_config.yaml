@@ -1,0 +1,46 @@
+book:
+  title: "Auto-Generated Documentation"
+  author: "Jupyter Book Assistant"
+  logo: ""
+  repository:
+    url: ""
+    path: ""
+    branch: "main"
+  
+structure:
+  chapters:
+    - file: index
+      title: Welcome
+    - file: api
+      title: API Documentation
+    - file: tutorials
+      title: Tutorials
+    - file: examples
+      title: Examples
+
+templates:
+  page_types:
+    concept: "templates/concept.md"
+    api: "templates/api.md"
+    tutorial: "templates/tutorial.md"
+    example: "templates/example.md"
+
+generation:
+  auto_generate_on_release: true
+  min_release_version: "patch"
+  excluded_paths:
+    - "tests/"
+    - "docs/"
+    - ".git/"
+
+review:
+  enabled: true
+  min_approvals: 1
+  auto_assign: true
+  reviewers: []
+
+sphinx:
+  config:
+    html_theme: "sphinx_book_theme"
+    html_title: "Documentation"
+    language: "en"
